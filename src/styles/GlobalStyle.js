@@ -3,6 +3,7 @@ import { createGlobalStyle } from "styled-components";
 const GlobalStyle = createGlobalStyle`
 * {
     box-sizing: border-box;
+    
 }
 html,
 body,
@@ -91,6 +92,7 @@ video {
     font-size: 100%;
     font: inherit;
     vertical-align: baseline;
+    font-family: "Roboto", sans-serif;
 }
 /* HTML5 display-role reset for older browsers */
 article,
