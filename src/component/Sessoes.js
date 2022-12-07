@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { BoxTitle } from "../styles/GlobalStyle";
 
 import Topo from "./Topo";
-import { BoxTitle } from "../styles/GlobalStyle";
+import Footer from "./Footer";
 
 const Sessoes = () => {
   const [diaSemana, setDiaSemana] = useState([]);
@@ -37,6 +38,7 @@ const Sessoes = () => {
         <button>15:00</button>
         <button>19:00</button>
       </BoxButtonsHours>
+      <Footer />
     </>
   );
 };
