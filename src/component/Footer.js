@@ -24,6 +24,7 @@ const FooterBox = styled.div`
   padding: 0 5%;
   gap: 30px;
   h2 {
+    color: #293845;
     font-size: 26px;
     letter-spacing: 1px;
   }

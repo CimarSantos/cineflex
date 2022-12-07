@@ -51,6 +51,7 @@ const BoxDays = styled.div`
   p {
     font-size: 25px;
     letter-spacing: 1.5px;
+    cursor: default;
   }
 `;
 
@@ -66,5 +67,9 @@ const BoxButtonsHours = styled.div`
     border-radius: 3px;
     color: #fff;
     font-size: 22px;
+    cursor: pointer;
+    &:hover {
+      box-shadow: 0 0 10px red;
+    }
   }
 `;
