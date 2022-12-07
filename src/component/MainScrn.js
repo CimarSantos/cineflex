@@ -1,11 +1,13 @@
 import { GlobalStyle } from "../styles/GlobalStyle";
-import Init from "./Init";
+/* import Init from "./Init"; */
+import Sessoes from "./Sessoes";
 
 const MainScrn = () => {
   return (
     <>
       <GlobalStyle />
-      <Init />
+      {/* <Init /> */}
+      <Sessoes />
     </>
   );
 };
