@@ -1,9 +1,9 @@
 import { createGlobalStyle } from "styled-components";
+import styled from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 * {
     box-sizing: border-box;
-    
 }
 html,
 body,
@@ -130,6 +130,22 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
 }
+
+.flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 `;
 
-export default GlobalStyle;
+const BoxTitle = styled.div`
+  height: 110px;
+  h2 {
+    font-size: 24px;
+    color: #293845;
+    letter-spacing: 0.04em;
+  }
+`;
+
+export { GlobalStyle, BoxTitle };

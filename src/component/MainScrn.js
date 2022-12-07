@@ -1,10 +1,11 @@
-import Topo from "./Topo";
+import { GlobalStyle } from "../styles/GlobalStyle";
+import Init from "./Init";
 
 const MainScrn = () => {
   return (
     <>
-      <Topo />
-      <h1>Main Screen</h1>
+      <GlobalStyle />
+      <Init />
     </>
   );
 };
