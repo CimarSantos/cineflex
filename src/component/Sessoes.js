@@ -10,6 +10,8 @@ import Footer from "./Footer";
 const Sessoes = () => {
   const { idMovie } = useParams();
   const [diaSemana, setDiaSemana] = useState([]);
+  const [imgFooter, setImageFooter] = useState([]);
+  const [titleFooter, setTitleFooter] = useState([]);
 
   useEffect(() => {
     const request = axios.get(
@@ -18,6 +20,8 @@ const Sessoes = () => {
     request
       .then((res) => {
         setDiaSemana(res.data.days);
+        setImageFooter(res.data.posterURL);
+        setTitleFooter(res.data.title);
       })
       .catch((err) => alert(err.message));
   }, [idMovie]);
@@ -45,7 +49,7 @@ const Sessoes = () => {
         ))}
       </BoxDays>
 
-      <Footer />
+      <Footer imagem={imgFooter} titulo={titleFooter} />
     </>
   );
 };
@@ -54,8 +58,9 @@ export default Sessoes;
 
 const BoxDays = styled.div`
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: start;
+  flex-direction: column;
   flex-wrap: wrap;
   padding-left: 5%;
   gap: 10px;

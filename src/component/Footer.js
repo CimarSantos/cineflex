@@ -3,10 +3,10 @@ import styled from "styled-components";
 const Footer = (props) => {
   return (
     <FooterBox>
-      <BoxPoster>
-        <img src={props.children} alt="Poster Movie" />
+      <BoxPoster className="flex">
+        <img src={props.imagem} alt="Poster Movie" />
       </BoxPoster>
-      <h2>{props.children}</h2>
+      <h2>{props.titulo}</h2>
     </FooterBox>
   );
 };
@@ -25,7 +25,7 @@ const FooterBox = styled.div`
   border: 1px solid #9eadba;
   justify-content: start;
   padding: 0 5%;
-  gap: 30px;
+  gap: 20px;
   h2 {
     color: #293845;
     font-size: 26px;
