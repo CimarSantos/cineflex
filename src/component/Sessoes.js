@@ -2,42 +2,49 @@ import styled from "styled-components";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { BoxTitle } from "../styles/GlobalStyle";
+import { useParams } from "react-router-dom";
 
 import Topo from "./Topo";
 import Footer from "./Footer";
 
 const Sessoes = () => {
+  const { idMovie } = useParams();
   const [diaSemana, setDiaSemana] = useState([]);
 
   useEffect(() => {
     const request = axios.get(
-      "https://mock-api.driven.com.br/api/v8/cineflex/movies/ID_DO_FILME/showtimes"
+      `https://mock-api.driven.com.br/api/v8/cineflex/movies/${idMovie}/showtimes`
     );
+    request
+      .then((res) => {
+        setDiaSemana(res.data.days);
+      })
+      .catch((err) => alert(err.message));
+  }, [idMovie]);
 
-    request.then((res) => {
-      setDiaSemana(res.data);
-    });
-  });
+  if (diaSemana === []) {
+    return <h2>Carregando as sessões do filme...</h2>;
+  }
   return (
     <>
       <Topo />
       <BoxTitle className="flex">
         <h2>Selecione o horário</h2>
       </BoxTitle>
-      <BoxDays className="flex">
-        <p>Quinta-feira - 24/06/2021</p>
+      <BoxDays>
+        {diaSemana.map((sessao, index) => (
+          <>
+            <p>
+              {sessao.weekday} - {sessao.date}
+            </p>
+            <div>
+              <button>15:00</button>
+              <button>19:00</button>
+            </div>
+          </>
+        ))}
       </BoxDays>
-      <BoxButtonsHours className="flex">
-        <button>15:00</button>
-        <button>19:00</button>
-      </BoxButtonsHours>
-      <BoxDays className="flex">
-        <p>Sexta-feira - 25/06/2021</p>
-      </BoxDays>
-      <BoxButtonsHours className="flex">
-        <button>15:00</button>
-        <button>19:00</button>
-      </BoxButtonsHours>
+
       <Footer />
     </>
   );
@@ -46,19 +53,18 @@ const Sessoes = () => {
 export default Sessoes;
 
 const BoxDays = styled.div`
+  display: flex;
+  align-items: center;
   justify-content: start;
+  flex-wrap: wrap;
   padding-left: 5%;
+  gap: 10px;
+  margin-bottom: 25%;
   p {
     font-size: 25px;
     letter-spacing: 1.5px;
     cursor: default;
   }
-`;
-
-const BoxButtonsHours = styled.div`
-  justify-content: start;
-  padding: 5%;
-  gap: 10px;
   button {
     width: 133px;
     height: 63px;
@@ -67,9 +73,12 @@ const BoxButtonsHours = styled.div`
     border-radius: 3px;
     color: #fff;
     font-size: 22px;
+    margin: 10px 15px 20px 0;
     cursor: pointer;
     &:hover {
       box-shadow: 0 0 10px red;
     }
   }
 `;
+
+

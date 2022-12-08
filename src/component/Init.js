@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { BoxTitle } from "../styles/GlobalStyle";
 import Topo from "./Topo";
+import { Link } from "react-router-dom";
 
 const Init = () => {
   const [movies, setMovies] = useState([]);
@@ -24,9 +25,11 @@ const Init = () => {
       </BoxTitle>
       <ContainerMovies className="flex">
         {movies.map((movie, index) => (
-          <BoxMovie key={index} className="flex">
-            <img src={movie.posterURL} alt="Poster Movie" />
-          </BoxMovie>
+          <Link key={index} to={`/sessoes/${movie.id}`}>
+            <BoxMovie className="flex">
+              <img src={movie.posterURL} alt="Poster Movie" />
+            </BoxMovie>
+          </Link>
         ))}
       </ContainerMovies>
     </>

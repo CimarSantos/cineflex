@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
-const Footer = () => {
+const Footer = (props) => {
   return (
-    <FooterBox className="flex">
+    <FooterBox>
       <BoxPoster>
-        <img src="" alt="Poster Movie" />
+        <img src={props.children} alt="Poster Movie" />
       </BoxPoster>
-      <h2>Enola Holmes</h2>
+      <h2>{props.children}</h2>
     </FooterBox>
   );
 };
@@ -14,6 +14,9 @@ const Footer = () => {
 export default Footer;
 
 const FooterBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: start;
   position: fixed;
   bottom: 0;
   width: 100%;
