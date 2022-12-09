@@ -7,6 +7,9 @@ const Footer = (props) => {
         <img src={props.imagem} alt="Poster Movie" />
       </BoxPoster>
       <h2>{props.titulo}</h2>
+      <h2>
+        {props.diaSemana} {props.hora}
+      </h2>
     </FooterBox>
   );
 };
