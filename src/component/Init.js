@@ -26,7 +26,7 @@ const Init = () => {
       <ContainerMovies className="flex">
         {movies.map((movie, index) => (
           <Link key={index} to={`/sessoes/${movie.id}`}>
-            <BoxMovie className="flex">
+            <BoxMovie data-test="movie" className="flex">
               <img src={movie.posterURL} alt="Poster Movie" />
             </BoxMovie>
           </Link>

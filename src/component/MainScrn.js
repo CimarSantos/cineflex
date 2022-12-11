@@ -9,12 +9,12 @@ const MainScrn = () => {
     <>
       <GlobalStyle />
       <BrowserRouter>
-        {/* <Routes>
+        <Routes>
           <Route path="/" element={<Init />} />
           <Route path="/sessoes/:idMovie" element={<Sessoes />} />
-          <Route path="/assentos/:idSessao" element={<Assentos />}/>
-        </Routes> */}
-        <Assentos />
+          <Route path="/assentos/:idSessao" element={<Assentos />} />
+        </Routes>
+        {/* <Assentos /> */}
       </BrowserRouter>
     </>
   );

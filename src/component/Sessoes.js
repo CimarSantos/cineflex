@@ -2,7 +2,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { BoxTitle } from "../styles/GlobalStyle";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import Topo from "./Topo";
 import Footer from "./Footer";
@@ -35,15 +35,20 @@ const Sessoes = () => {
       <BoxTitle className="flex">
         <h2>Selecione o horário</h2>
       </BoxTitle>
-      <BoxDays>
+      <BoxDays data-test="movie-day">
         {diaSemana.map((sessao, index) => (
           <>
-            <p>
+            <p key={index}>
               {sessao.weekday} - {sessao.date}
             </p>
             <div>
-              <button>15:00</button>
-              <button>19:00</button>
+              {sessao.showtimes.map((showtimes, index) => (
+                <Link to={`/assentos/${showtimes.id}`}>
+                  <button data-test="showtime" key={index}>
+                    {showtimes.name}
+                  </button>
+                </Link>
+              ))}
             </div>
           </>
         ))}

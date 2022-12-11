@@ -3,7 +3,7 @@ import styled from "styled-components";
 const Footer = (props) => {
   return (
     <FooterBox>
-      <BoxPoster className="flex">
+      <BoxPoster data-test="footer" className="flex">
         <img src={props.imagem} alt="Poster Movie" />
       </BoxPoster>
       <h2>{props.titulo}</h2>
