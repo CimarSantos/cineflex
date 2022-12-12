@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BoxTitle } from "../styles/GlobalStyle";
 import styled from "styled-components";
 import axios from "axios";
 
 import Topo from "./Topo";
 
-const Assentos = () => {
+const Assentos = ({ pedido, setPedido }) => {
   const { idSessao } = useParams();
   const [seats, setSeats] = useState([]);
   const [assentoSelecionado, setAssentoSelecionado] = useState([]);
@@ -18,6 +18,33 @@ const Assentos = () => {
   const [diaFooter, setDiaFooter] = useState([]);
   const [horaFooter, setHoraFooter] = useState([]);
 
+  function fazerPedido() {
+    let selectedSeatsIds = [];
+    let selectedSeatsNumbers = [];
+    selectedSeats.forEach((seat) => {
+      selectedSeatsIds.push(seat.id);
+      selectedSeatsNumbers.push(seat.number);
+    });
+    const objPedido = {
+      ids: selectedSeatsIds,
+      name: name,
+      cpf: cpf,
+    };
+    setPedido({
+      ...pedido,
+      name: name,
+      cpf: cpf,
+      assentos: selectedSeatsNumbers,
+    });
+    const request = axios.post(
+      `https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many`,
+      objPedido
+    );
+    request.then(navigate("/sucesso"));
+  }
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     const request = axios.get(
       `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`
@@ -26,13 +53,19 @@ const Assentos = () => {
     request
       .then((res) => {
         setSeats(res.data.seats);
+
         setImgFooter(res.data.movie.posterURL);
         setTitleFooter(res.data.movie.title);
         setDiaFooter(res.data.day.weekday);
         setHoraFooter(res.data.name);
+        setPedido({
+          filme: res.data.movie.title,
+          data: res.data.day.date,
+          horario: res.data.name,
+        });
       })
       .catch("Aguarde, carregando...");
-  }, [idSessao]);
+  }, []);
   return (
     <>
       <Topo />
@@ -43,6 +76,7 @@ const Assentos = () => {
         <SeatsContainer className="flex">
           {seats.map((assento, index) => (
             <Cadeira
+              data-test="seat"
               key={index}
               number={assento.name}
               id={assento.id}
@@ -69,8 +103,8 @@ const Assentos = () => {
           <p>Indisponível</p>
         </div>
       </Legend>
-      <Formulario onSubmit="">
-        <label for="campoNome">Nome do Comprador:</label>
+      <Formulario>
+        <label htmlFor="campoNome">Nome do Comprador:</label>
         <input
           data-test="client-name"
           id="campoNome"
@@ -78,8 +112,9 @@ const Assentos = () => {
           placeholder="Digite seu nome..."
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
-        <label for="campoCPF">CPF do Comprador:</label>
+        <label htmlFor="campoCPF">CPF do Comprador:</label>
         <input
           data-test="client-cpf"
           id="campoCPF"
@@ -87,9 +122,12 @@ const Assentos = () => {
           placeholder="Digite seu CPF..."
           value={cpf}
           onChange={(e) => setCpf(e.target.value)}
+          required
         />
 
-        <button type="submit">Reservar assento(s)</button>
+        <button data-test="book-seat-btn" type="submit" onClick={fazerPedido}>
+          Reservar assento(s)
+        </button>
       </Formulario>
       <FooterBox data-test="footer">
         <BoxPoster data-test="footer" className="flex">
@@ -109,15 +147,16 @@ export default Assentos;
 function Cadeira({ number, isAvailable, id }) {
   const [selected, setSelected] = useState(false);
 
-  function select(isAvaliable, id, number, selectedSeats, setSelectedSeats) {
-    if (isAvaliable) {
+  function select(isAvailable, id, number, selectedSeats, setSelectedSeats) {
+    if (isAvailable) {
       setSelected(!selected);
       if (selected) {
         let array = selectedSeats.filter((seat) => seat !== id);
         setSelectedSeats(array);
-      } else {
-        setSelectedSeats([...setSelectedSeats, { id, number }]);
-      }
+      } /* else {
+        const atualizaSeats = { id, number };
+          setSelectedSeats([...selectedSeats, atualizaSeats]);
+      } */
     } else {
       alert("Este assento não está disponível, tente escolher outro!");
     }
@@ -127,7 +166,7 @@ function Cadeira({ number, isAvailable, id }) {
       className="seat flex"
       onClick={() => select(isAvailable, id)}
       selected={selected}
-      isAvaliable={isAvailable}
+      isAvailable={isAvailable}
     >
       {number}
     </Cadacadeira>
@@ -185,7 +224,7 @@ const Cadacadeira = styled.div`
   font-size: 13px;
   color: #000;
   background-color: ${(props) =>
-    props.selected ? "#8dd7cf" : props.isAvaliable ? "#c3cfd9" : "#fbe192"};
+    props.selected ? "#8dd7cf" : props.isAvailable ? "#c3cfd9" : "#fbe192"};
   border: 1px solid #808f9d;
   border-radius: 50%;
   cursor: pointer;

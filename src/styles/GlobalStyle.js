@@ -146,6 +146,14 @@ const BoxTitle = styled.div`
     color: #293845;
     letter-spacing: 0.04em;
   }
+
+  .sucesso {
+    text-align: center;
+    font-weight: 700;
+    line-height: 30px;
+    color: #247a6b;
+  }
 `;
+
 
 export { GlobalStyle, BoxTitle };
