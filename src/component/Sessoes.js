@@ -43,10 +43,8 @@ const Sessoes = () => {
             </p>
             <div>
               {sessao.showtimes.map((showtimes, index) => (
-                <Link to={`/assentos/${showtimes.id}`}>
-                  <button data-test="showtime" key={index}>
-                    {showtimes.name}
-                  </button>
+                <Link data-test="showtime" to={`/assentos/${showtimes.id}`}>
+                  <button key={index}>{showtimes.name}</button>
                 </Link>
               ))}
             </div>
