@@ -5,11 +5,12 @@ import styled from "styled-components";
 import axios from "axios";
 
 import Topo from "./Topo";
-import Footer from "./Footer";
 
 const Assentos = () => {
   const { idSessao } = useParams();
   const [seats, setSeats] = useState([]);
+  const [assentoSelecionado, setAssentoSelecionado] = useState([]);
+  const [selectedSeats, setSelectedSeats] = useState([]);
   const [name, setName] = useState("");
   const [cpf, setCpf] = useState("");
   const [imgFooter, setImgFooter] = useState([]);
@@ -22,81 +23,41 @@ const Assentos = () => {
       `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`
     );
 
-    request.then((res) => {
-      setImgFooter(res.data.movie.posterURL);
-      setTitleFooter(res.data.movie.title);
-      setDiaFooter(res.data.day.weekday);
-      setHoraFooter(res.data.name);
-    });
-  }, []);
+    request
+      .then((res) => {
+        setSeats(res.data.seats);
+        setImgFooter(res.data.movie.posterURL);
+        setTitleFooter(res.data.movie.title);
+        setDiaFooter(res.data.day.weekday);
+        setHoraFooter(res.data.name);
+      })
+      .catch("Aguarde, carregando...");
+  }, [idSessao]);
   return (
     <>
       <Topo />
       <BoxTitle className="flex">
         <h2>Selecione o(s) assento(s)</h2>
       </BoxTitle>
-      <SeatsContainer className="flex">
-        <div className="flex">
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-        </div>
-        <div className="flex">
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-        </div>
-        <div className="flex">
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-        </div>
-        <div className="flex">
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-        </div>
-        <div className="flex">
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-          <div className="seat"></div>
-        </div>
-      </SeatsContainer>
+      {seats ? (
+        <SeatsContainer className="flex">
+          {seats.map((assento, index) => (
+            <Cadeira
+              key={index}
+              number={assento.name}
+              id={assento.id}
+              isAvailable={assento.isAvailable}
+              assentoSelecionado={assentoSelecionado}
+              setAssentoSelecionado={setAssentoSelecionado}
+              selectedSeats={selectedSeats}
+              setSelectedSeats={setSelectedSeats}
+            />
+          ))}
+        </SeatsContainer>
+      ) : (
+        <h2>Carregando assentos...</h2>
+      )}
+
       <Legend className="flex">
         <div className="selecinado flex">
           <p>Selecionado</p>
@@ -111,6 +72,7 @@ const Assentos = () => {
       <Formulario onSubmit="">
         <label for="campoNome">Nome do Comprador:</label>
         <input
+          data-test="client-name"
           id="campoNome"
           type="text"
           placeholder="Digite seu nome..."
@@ -119,6 +81,7 @@ const Assentos = () => {
         />
         <label for="campoCPF">CPF do Comprador:</label>
         <input
+          data-test="client-cpf"
           id="campoCPF"
           type="text"
           placeholder="Digite seu CPF..."
@@ -128,7 +91,7 @@ const Assentos = () => {
 
         <button type="submit">Reservar assento(s)</button>
       </Formulario>
-      <FooterBox>
+      <FooterBox data-test="footer">
         <BoxPoster data-test="footer" className="flex">
           <img src={imgFooter} alt="Poster Movie" />
         </BoxPoster>
@@ -142,6 +105,34 @@ const Assentos = () => {
 };
 
 export default Assentos;
+
+function Cadeira({ number, isAvailable, id }) {
+  const [selected, setSelected] = useState(false);
+
+  function select(isAvaliable, id, number, selectedSeats, setSelectedSeats) {
+    if (isAvaliable) {
+      setSelected(!selected);
+      if (selected) {
+        let array = selectedSeats.filter((seat) => seat !== id);
+        setSelectedSeats(array);
+      } else {
+        setSelectedSeats([...setSelectedSeats, { id, number }]);
+      }
+    } else {
+      alert("Este assento não está disponível, tente escolher outro!");
+    }
+  }
+  return (
+    <Cadacadeira
+      className="seat flex"
+      onClick={() => select(isAvailable, id)}
+      selected={selected}
+      isAvaliable={isAvailable}
+    >
+      {number}
+    </Cadacadeira>
+  );
+}
 
 const Formulario = styled.form`
   display: flex;
@@ -182,20 +173,24 @@ const Formulario = styled.form`
 `;
 
 const SeatsContainer = styled.div`
-  flex-direction: column;
+  padding: 0 25px;
+  display: flex;
+  gap: 10px;
   flex-wrap: wrap;
-  gap: 5px;
-  div {
-    gap: 10px;
-    margin-bottom: 7px;
-  }
-  .seat {
-    width: 32px;
-    height: 32px;
-    color: #000;
-    background-color: #c3cfd9;
-    border: 1px solid #808f9d;
-    border-radius: 50%;
+  margin-bottom: 7px;
+`;
+const Cadacadeira = styled.div`
+  width: 32px;
+  height: 32px;
+  font-size: 13px;
+  color: #000;
+  background-color: ${(props) =>
+    props.selected ? "#8dd7cf" : props.isAvaliable ? "#c3cfd9" : "#fbe192"};
+  border: 1px solid #808f9d;
+  border-radius: 50%;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 0 10px red;
   }
 `;
 
@@ -241,11 +236,12 @@ const FooterBox = styled.div`
   border: 1px solid #9eadba;
   justify-content: start;
   padding: 0 5%;
-  gap: 20px;
+  gap: 10px;
   h2 {
     color: #293845;
     font-size: 26px;
     letter-spacing: 1px;
+    line-height: 30px;
   }
 `;
 
